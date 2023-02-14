@@ -1,0 +1,15 @@
+import { Schema, model } from "mongoose";
+
+const roleSchema = Schema({
+    rol: {
+        type: String,
+        required: [true, 'El rol es obligatorio'],
+    }
+})
+
+
+// Crea un nuevo model de role. Debe estar en singular Role y no Roles.
+
+const Rol = model('Role', roleSchema)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+export { Rol };

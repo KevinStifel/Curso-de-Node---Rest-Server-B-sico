@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { router } from '../routes/usuarios.js'
+import { dbConnection } from '../database/config.js';
 
 
 
@@ -11,11 +12,18 @@ class Server {
         this.port = process.env.PORT
         this.usuariosPath = '/api/usuarios';
 
+        // Conectar a base de datos
+        this.conectarDB();
+
         // Middlewares
         this.middlewares();
 
         // Rutas de mi aplicación
         this.routes();
+    }
+
+    async conectarDB() {
+        await dbConnection();
     }
 
     middlewares() {
@@ -33,6 +41,7 @@ class Server {
 
     routes() {
         // Middleware condicional, se carga en esta ruta.
+        // En vez de poner this.app.use(router);
         this.app.use(this.usuariosPath, router );
     }
 
