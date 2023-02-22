@@ -2,12 +2,19 @@ import { Router } from 'express';
 
 import { check } from 'express-validator';
 
+// Controladores
 import { usuariosGet, usuariosPut, usuariosPost,  usuariosDelete, usuariosPatch, usuariosPut404 } from '../controllers/usuarios.js';
 
-import { validarCampos } from '../middlewares/validar-campos.js';
-
+// Helpers
 import { esRolValido, emailExiste, existeUsuarioPorIdCustom} from '../helpers/db-validators.js';
 
+
+// Junte los 3 en una sola importacion que reconoce como index.js en la carpeta de middlewares
+// Tiene que ser el nombre index (es algo de node), va a buscar el archivo directamente
+// Asi junto 3 importaciones en solo una
+
+// Middlewares Personalizados
+import { validarCampos, validarJWT, esAdminRole, tieneRol } from '../middlewares/index.js';
 
 const router = Router();
 
@@ -50,6 +57,10 @@ router.post(
 
 router.delete('/:id',
     [
+        // En ValidarJWT se define el usuario en la request, por lo que en esAdminRole ya se puede acceder a esa propiedad.
+        validarJWT,
+        // esAdminRole,
+        tieneRol('ADMIN_ROLE', 'VENTAS_ROLE'),
         check('id', 'No es un ID válido').isMongoId(),
         check('id').custom( existeUsuarioPorIdCustom ),
         validarCampos
@@ -58,4 +69,4 @@ router.delete('/:id',
 
 router.patch('/', usuariosPatch);
 
-export { router };
+export { router as router_usuarios };

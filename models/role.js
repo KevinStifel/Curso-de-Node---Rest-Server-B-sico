@@ -7,7 +7,6 @@ const roleSchema = Schema({
     }
 })
 
-
 // Crea un nuevo model de role. Debe estar en singular Role y no Roles.
 
 const Rol = model('Role', roleSchema)

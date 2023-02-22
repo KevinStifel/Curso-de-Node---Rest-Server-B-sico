@@ -1,4 +1,3 @@
-import { check } from 'express-validator';
 
 import { Rol } from '../models/role.js';
 
@@ -8,6 +7,7 @@ import { Usuario } from '../models/usuario.js';
 
 const esRolValido = async (rol = '') => {
     const existeRol = await Rol.findOne({rol});
+    console.log(rol);
     if (!existeRol) {
         throw new Error(`El rol ${rol} no está registrado en la BD`);
     }

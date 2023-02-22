@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
-import { router } from '../routes/usuarios.js'
+import { router_usuarios } from '../routes/usuarios.js'
+import { router_auth } from '../routes/auth.js'
 import { dbConnection } from '../database/config.js';
 
 
@@ -11,6 +12,7 @@ class Server {
         this.app = express();
         this.port = process.env.PORT
         this.usuariosPath = '/api/usuarios';
+        this.authPath = '/api/auth';
 
         // Conectar a base de datos
         this.conectarDB();
@@ -42,7 +44,8 @@ class Server {
     routes() {
         // Middleware condicional, se carga en esta ruta.
         // En vez de poner this.app.use(router);
-        this.app.use(this.usuariosPath, router );
+        this.app.use(this.authPath, router_auth );
+        this.app.use(this.usuariosPath, router_usuarios );
     }
 
     listen() {
