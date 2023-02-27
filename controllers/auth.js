@@ -6,6 +6,8 @@ import { Usuario } from "../models/usuario.js";
 
 import { generarJWT } from "../helpers/generar-jwt.js";
 
+import { googleVerify } from "../helpers/google-verify.js";
+
 // const usuario = new Usuario();
 
 const login = async (req, res = response) => {
@@ -29,10 +31,11 @@ const login = async (req, res = response) => {
                 msg: 'Usuario / Password no son correctos - estado: false'
             })
         }
-
-        // Verificar la contraseña
+        
+        // Generar el JWT
         const token = await generarJWT( usuario.id );
-
+        
+        // Verificar la contraseña
         const validPassword = bcryptjs.compareSync( password, usuario.password ) // compareSync compara si las dos contraseñas son iguales con el password con hash registrado en la BD.
 
         if ( !validPassword ) {
@@ -41,7 +44,6 @@ const login = async (req, res = response) => {
             })
         }
 
-        // Generar el JWT
 
         res.json({
             usuario,
@@ -56,4 +58,57 @@ const login = async (req, res = response) => {
     }
 }
 
-export { login };
+const googleSignIn = async (req, res = response) => {
+
+    const { id_token } = req.body;
+
+    try {
+
+        const { nombre, img, correo } = await googleVerify(id_token);
+
+        let usuario = await Usuario.findOne({ correo });
+
+        // 1er caso: Usuario no existe
+        if ( !usuario ) {
+            // Creo usuario
+            const data = {
+                nombre,
+                correo,
+                password: ':P',
+                img,
+                google: true
+            };
+
+            usuario = new Usuario( data );
+            
+            await usuario.save();
+            
+        }
+
+        // 2do caso: Si el usuario está bloqueado. Es decir, tiene su estado en false.
+
+        if ( !usuario.estado ){
+            return res.status(401).json({
+                msg: 'Hable con el administrador, usuario bloqueado'
+            })
+        };
+
+        // Generar el JWT
+        const token = await generarJWT( usuario.id );
+
+        res.json({
+            usuario,
+            token
+        })
+        
+    } catch (error) {
+
+        res.status(400).json({
+            ok: false,
+            msg: 'El token no se pudo verificar'
+        })
+        
+    }
+}
+
+export { login, googleSignIn };

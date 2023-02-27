@@ -19,13 +19,14 @@ const usuarioSchema = Schema({
         required: [true, 'La contraseña es obligatorio'],
     },
 
-    imagen: {
+    img: {
         type: String,
     },
 
     rol: {
         type: String,
         required: true,
+        default: 'USER_ROLE'
         // Si le dejo la enum, me va a dar error al tratar de utilizar un valor distinto como rol.
         // enum: ['ADMIN_ROLE', 'USER_ROLE'], // Validación para que el rol sea uno de estos dos
     },

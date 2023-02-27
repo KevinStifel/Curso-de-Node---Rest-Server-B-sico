@@ -2,7 +2,7 @@ import { Router } from 'express';
 
 import { check } from 'express-validator';
 
-import { login } from '../controllers/auth.js';
+import { googleSignIn, login } from '../controllers/auth.js';
 
 import { validarCampos } from '../middlewares/validar-campos.js';
 
@@ -17,6 +17,15 @@ router.post(
         validarCampos
     ],
     login
+);
+
+router.post(
+    '/google', 
+    [   
+        check('id_token', 'id_token es necesario' ).notEmpty(),
+        validarCampos
+    ],
+    googleSignIn
 );
 
 
